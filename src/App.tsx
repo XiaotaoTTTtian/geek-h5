@@ -7,7 +7,7 @@ import {
   Redirect,
 } from 'react-router-dom'
 // imported components
-import Login from './pages/Login'
+import Login from '@/pages/Login'
 import Layout from './pages/Layout'
 
 function App() {
