@@ -1,10 +1,13 @@
+import { useHistory } from 'react-router-dom'
 import './index.scss'
-import Icon from '@/components/Icon'
 const Layout = () => {
+  const history = useHistory()
+  const onClick = () => {
+    history.go(-1)
+  }
   return (
     <div className="test">
-      首页11
-      <Icon type="iconbtn_like_sel" />
+      <button onClick={onClick}>回退</button>
     </div>
   )
 }
