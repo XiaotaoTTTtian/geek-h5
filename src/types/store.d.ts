@@ -1,5 +1,6 @@
 import { ThunkAction } from 'redux-thunk'
 import store from '@/store'
+import { Token } from './data'
 // redux specifies the state type of the application
 export type RootState = ReturnType<typeof store.getState>
 /**
@@ -10,4 +11,8 @@ export type RootState = ReturnType<typeof store.getState>
  */
 export type RootThunkAction = ThunkAction<void, RootState, unknown, RootAction>
 // the type of all actions in the project
-type RootAction = unknown
+type RootAction = LoginAction
+export type LoginAction = {
+  type: 'login/token'
+  payload: Token
+}
