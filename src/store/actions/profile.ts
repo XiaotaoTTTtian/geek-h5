@@ -1,10 +1,6 @@
 import { http } from '@/utils'
 import { RootThunkAction } from '@/types/store'
-import { User } from '@/types/data'
-type UserResponse = {
-  message: string
-  data: User
-}
+import { UserResponse } from '@/types/data'
 // obtain user's personal information
 export const getInformation = (): RootThunkAction => {
   return async (dispatch) => {
