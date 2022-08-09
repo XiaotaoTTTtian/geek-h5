@@ -9,6 +9,7 @@ import {
 // imported components
 import Login from '@/pages/Login'
 import Layout from './pages/Layout'
+import ProfileEdit from './pages/Profile/Edit'
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route exact path="/" render={() => <Redirect to="/home/index" />} />
           <Route path="/home" component={Layout} />
           <Route path="/login" component={Login} />
+          <Route path="/profile/edit" component={ProfileEdit} />
         </Switch>
       </div>
     </Router>

@@ -1,6 +1,6 @@
 import { ThunkAction } from 'redux-thunk'
 import store from '@/store'
-import { Token, User } from './data'
+import { Token, User, UserProfile } from './data'
 // redux specifies the state type of the application
 export type RootState = ReturnType<typeof store.getState>
 //  Create a type for thunk dispatch
@@ -21,4 +21,6 @@ export type LoginAction =
     }
   | { type: 'login/getCode' }
 
-export type UserAction = { type: 'user/getInformation'; payload: User }
+export type UserAction =
+  | { type: 'user/getInformation'; payload: User }
+  | { type: 'user/getProfile'; payload: UserProfile }

@@ -20,3 +20,14 @@ export type User = {
   like_count: number
 }
 export type UserResponse = ApiResponse<User>
+// subscriber data
+export type UserProfile = {
+  id: string
+  photo: string
+  name: string
+  mobile: string
+  gender: number
+  birthday: string
+  intro: string
+}
+export type UserProfileResponse = ApiResponse<UserProfile>
