@@ -25,3 +25,13 @@ export const getToken = (data: LoginForm): RootThunkAction => {
     dispatch({ type: 'login/token', payload: res.data.data })
   }
 }
+// get code
+export const getCodes = (mobile: string): RootThunkAction => {
+  return async () => {
+    await http.get(`/sms/codes/${mobile}`)
+    Toast.show({
+      icon: 'success',
+      content: '正在获取验证码',
+    })
+  }
+}

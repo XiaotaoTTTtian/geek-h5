@@ -14,7 +14,9 @@ export type AppThunkDispatch = ThunkDispatch<RootState, any, AnyAction>
 export type RootThunkAction = ThunkAction<void, RootState, unknown, RootAction>
 // the type of all actions in the project
 type RootAction = LoginAction
-export type LoginAction = {
-  type: 'login/token'
-  payload: Token
-}
+export type LoginAction =
+  | {
+      type: 'login/token'
+      payload: Token
+    }
+  | { type: 'login/getCode' }

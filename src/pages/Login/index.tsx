@@ -1,10 +1,10 @@
 import { NavBar, Form, Input, Button } from 'antd-mobile'
 import { useDispatch } from 'react-redux'
-import { getToken } from '@/store/actions/login'
+import { getToken, getCodes } from '@/store/actions/login'
 import { AppThunkDispatch } from '@/types/store'
 import styles from './index.module.scss'
 import { useHistory } from 'react-router-dom'
-import { useRef } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { InputRef } from 'antd-mobile/es/components/input'
 const Login = () => {
   // form data type
@@ -16,6 +16,8 @@ const Login = () => {
   const history = useHistory()
   const [form] = Form.useForm()
   const mobileRef = useRef<InputRef>(null)
+  let clearTimerRef = useRef(-1)
+  const [timeLeft, setTimeLeft] = useState(0)
   // login
   const onFinish = async (value: LoginForm) => {
     try {
@@ -24,14 +26,31 @@ const Login = () => {
     } catch {}
   }
   // get code
-  const getCode = () => {
+  const getCode = async () => {
     const mobile = (form.getFieldValue('mobile') ?? '') as string
     const hasError = form.getFieldError('mobile').length > 0
     if (mobile === '' || hasError) {
       // get focus
       return mobileRef.current?.focus()
     }
+    await dispatch(getCodes(mobile))
+    setTimeLeft(5)
+    clearTimerRef.current = window.setInterval(() => {
+      setTimeLeft((timeLeft) => timeLeft - 1)
+    }, 1000)
   }
+  // clear timer after reaching zero
+  useEffect(() => {
+    if (timeLeft === 0) {
+      clearInterval(clearTimerRef.current)
+    }
+  }, [timeLeft])
+  // clean up timer when component is destroyed
+  useEffect(() => {
+    return () => {
+      clearInterval(clearTimerRef.current)
+    }
+  }, [])
   return (
     <div className={styles.root}>
       {/* head navigation bar */}
@@ -62,7 +81,11 @@ const Login = () => {
             <Input placeholder="请输入手机号" ref={mobileRef} />
           </Form.Item>
           <Form.Item
-            extra={<span onClick={getCode}>发送验证码</span>}
+            extra={
+              <span onClick={getCode}>
+                {timeLeft === 0 ? '发送验证码' : `${timeLeft}秒后重新发送`}
+              </span>
+            }
             name="code"
             className="login-item"
             validateTrigger="onChange"
