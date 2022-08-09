@@ -22,7 +22,7 @@ const Login = () => {
   const onFinish = async (value: LoginForm) => {
     try {
       await dispatch(getToken(value))
-      history.push('/home')
+      history.push('/home/index')
     } catch {}
   }
   // get code
