@@ -1,10 +1,8 @@
 import { Button, List, DatePicker, NavBar } from 'antd-mobile'
 import classNames from 'classnames'
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
 import { useHistory } from 'react-router-dom'
 import { getProfile } from '@/store/actions/profile'
-import { AppThunkDispatch, RootState } from '@/types/store'
+import { useInitialState } from '@/utils/use-initial-state'
 
 import styles from './index.module.scss'
 
@@ -12,15 +10,7 @@ const Item = List.Item
 
 const ProfileEdit = () => {
   const history = useHistory()
-  const dispatch = useDispatch<AppThunkDispatch>()
-  const { userProfile } = useSelector<RootState, RootState['profile']>(
-    (state) => state.profile
-  )
-  console.log(userProfile)
-
-  useEffect(() => {
-    dispatch(getProfile())
-  }, [dispatch])
+  const { userProfile } = useInitialState(getProfile, 'profile')
   return (
     <div className={styles.root}>
       <div className="content">

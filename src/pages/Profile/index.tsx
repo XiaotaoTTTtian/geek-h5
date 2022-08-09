@@ -1,23 +1,14 @@
 import { Link, useHistory } from 'react-router-dom'
 
 import styles from './index.module.scss'
-import { useEffect } from 'react'
-import { useDispatch, useSelector } from 'react-redux'
-import { AppThunkDispatch, RootState } from '@/types/store'
 import { getInformation } from '@/store/actions/profile'
 import Icon from '@/components/Icon'
+import { useInitialState } from '@/utils/use-initial-state'
 
 const Profile = () => {
   const history = useHistory()
-  const dispatch = useDispatch<AppThunkDispatch>()
-  const { user } = useSelector<RootState, RootState['profile']>(
-    (state) => state.profile
-  )
-  console.log(user)
-
-  useEffect(() => {
-    dispatch(getInformation())
-  }, [dispatch])
+  // customize the hook
+  const { user } = useInitialState(getInformation, 'profile')
   return (
     <div className={styles.root}>
       <div className="profile">
