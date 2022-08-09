@@ -16,6 +16,6 @@ export const useInitialState = <StateName extends keyof RootState>(
   const state = useSelector((state: RootState) => state[stateName])
   useEffect(() => {
     dispatch(action())
-  }, [dispatch])
+  }, [dispatch, action])
   return state
 }

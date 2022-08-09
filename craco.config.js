@@ -16,10 +16,14 @@ module.exports = {
       // 在 SASS 中使用
       '@scss': path.resolve(__dirname, 'src/assets/styles')
     }
-  }
-  // style: {
-  //   postcss: {
-  //     plugins: [vw]
-  //   }
-  // }  
+  },
+  style: {
+    mode: 'extends',
+    loaderOptions: {
+      postcssOptions: {
+        ident: 'postcss',
+        plugins: [vw]
+      }
+    }
+  }  
 }
