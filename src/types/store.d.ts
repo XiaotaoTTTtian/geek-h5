@@ -24,3 +24,4 @@ export type LoginAction =
 export type UserAction =
   | { type: 'user/getInformation'; payload: User }
   | { type: 'user/getProfile'; payload: UserProfile }
+  | { type: 'user/update'; payload: object }

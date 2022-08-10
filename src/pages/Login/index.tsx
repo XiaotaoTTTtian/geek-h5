@@ -63,7 +63,10 @@ const Login = () => {
           mode="card"
           validateTrigger={['onChange']}
           onFinish={onFinish}
-          initialValues={{}}
+          initialValues={{
+            mobile: '13911111111',
+            code: '246810',
+          }}
           form={form}
         >
           <Form.Item
@@ -100,7 +103,7 @@ const Login = () => {
               // form.getFieldsError() gets error information for all field names
               const disabled =
                 !!form.getFieldsError().filter((item) => item.errors.length)
-                  .length || untouch
+                  .length || false
               return (
                 <Button
                   block

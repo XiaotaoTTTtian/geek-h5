@@ -7,13 +7,64 @@ import { useInitialState } from '@/utils/use-initial-state'
 import styles from './index.module.scss'
 import EditInput from './components/EditInput'
 import { useState } from 'react'
-
+import { useDispatch } from 'react-redux'
+import { AppThunkDispatch } from '@/types/store'
+import { updateUser } from '@/store/actions/profile'
 const Item = List.Item
 
 const ProfileEdit = () => {
   const history = useHistory()
-  const [inputVisbel, setInputVisbel] = useState(false)
+  const dispatch = useDispatch<AppThunkDispatch>()
+  type InputPopup = {
+    type: '' | 'name' | 'intro'
+    value: string
+    visibel: boolean
+  }
+  const [inputPopup, setInputPopup] = useState<InputPopup>({
+    type: '',
+    value: '',
+    visibel: false,
+  })
+  // hide the pop-up layer
+  const onInputHide = () => {
+    setInputPopup({
+      type: '',
+      value: '',
+      visibel: false,
+    })
+  }
+  // modify the nickname
+  // const onInputShow = () => {
+  //   setInputPopup({
+  //     type: 'name',
+  //     value: userProfile.name,
+  //     visibel: true,
+  //   })
+  // }
+  const onInputShow = (
+    type: InputPopup['type'],
+    value: InputPopup['value']
+  ) => {
+    setInputPopup({
+      type,
+      value,
+      visibel: true,
+    })
+  }
+  const onIntroShow = () => {
+    setInputPopup({
+      type: 'intro',
+      value: userProfile.intro,
+      visibel: true,
+    })
+  }
+
   const { userProfile } = useInitialState(getProfile, 'profile')
+  // modify the nickname
+  const updatePersonalInformation = (type: 'name' | 'intro', value: string) => {
+    if (value === userProfile.name || value.trim() === '') return
+    dispatch(updateUser({ [type]: value }))
+  }
   return (
     <div className={styles.root}>
       <div className="content">
@@ -52,7 +103,7 @@ const ProfileEdit = () => {
             <Item
               arrow
               extra={userProfile.name}
-              onClick={() => setInputVisbel(true)}
+              onClick={() => onInputShow('name', userProfile.name)}
             >
               昵称
             </Item>
@@ -63,6 +114,7 @@ const ProfileEdit = () => {
                   {userProfile.intro || '未填写'}
                 </span>
               }
+              onClick={() => onInputShow('intro', userProfile.intro ?? '')}
             >
               简介
             </Item>
@@ -90,10 +142,12 @@ const ProfileEdit = () => {
           <Button className="btn">退出登录</Button>
         </div>
       </div>
-      <Popup visible={inputVisbel} position="right">
+      <Popup visible={inputPopup.visibel} position="right">
         <EditInput
-          onBack={() => setInputVisbel(false)}
-          value={userProfile.name}
+          onBack={onInputHide}
+          value={inputPopup.value}
+          type={inputPopup.type}
+          onUpdateProfile={updatePersonalInformation}
         />
       </Popup>
     </div>

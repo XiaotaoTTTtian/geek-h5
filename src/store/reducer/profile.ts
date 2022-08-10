@@ -20,6 +20,12 @@ export const profile = (
     // subscriber data
     case 'user/getProfile':
       return { ...state, userProfile: action.payload }
+    // update data
+    case 'user/update':
+      return {
+        ...state,
+        userProfile: { ...state.userProfile, ...action.payload },
+      }
     default:
       return state
   }
