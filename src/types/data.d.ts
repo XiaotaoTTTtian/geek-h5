@@ -31,3 +31,5 @@ export type UserProfile = {
   intro: string
 }
 export type UserProfileResponse = ApiResponse<UserProfile>
+// modify the picture
+export type UserPhotoResponse = ApiResponse<{ photo: string }>

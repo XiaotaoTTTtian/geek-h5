@@ -6,7 +6,7 @@ import { customHistory } from './history'
 
 export const http = axios.create({
   baseURL: 'http://geek.itheima.net/v1_0',
-  timeout: 5000,
+  timeout: 10000,
 })
 // request interceptor
 http.interceptors.request.use((config) => {
@@ -21,6 +21,7 @@ http.interceptors.request.use((config) => {
 })
 // reponse interceptor
 http.interceptors.response.use(undefined, (error) => {
+  console.log(1, error)
   if (!error.response) {
     Toast.show({
       icon: 'error',

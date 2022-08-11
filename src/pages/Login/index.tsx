@@ -99,7 +99,7 @@ const Login = () => {
           <Form.Item noStyle shouldUpdate>
             {() => {
               // chenk to see if all fields have been manipulated
-              const untouch = !form.isFieldsTouched(true)
+              // const untouch = !form.isFieldsTouched(true)
               // form.getFieldsError() gets error information for all field names
               const disabled =
                 !!form.getFieldsError().filter((item) => item.errors.length)

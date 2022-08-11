@@ -9,6 +9,9 @@ export const login = (state = initialState, action: LoginAction): Token => {
     // login request token
     case 'login/token':
       return action.payload
+    // log out
+    case 'login/logout':
+      return initialState
     default:
       return state
   }

@@ -1,5 +1,5 @@
 import { RootThunkAction } from '@/types/store'
-import { http, setToken } from '@/utils'
+import { http, setToken, delToken } from '@/utils'
 import { Toast } from 'antd-mobile'
 // response type of the interface
 import { LoginResponse } from '@/types/data'
@@ -30,5 +30,12 @@ export const getCodes = (mobile: string): RootThunkAction => {
       icon: 'success',
       content: '正在获取验证码',
     })
+  }
+}
+// log out
+export const Logout = (): RootThunkAction => {
+  return (dispatch) => {
+    dispatch({ type: 'login/logout' })
+    delToken()
   }
 }

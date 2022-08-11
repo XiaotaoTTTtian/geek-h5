@@ -1,6 +1,11 @@
 import { http } from '@/utils'
 import { RootThunkAction } from '@/types/store'
-import { UserResponse, UserProfileResponse, UserProfile } from '@/types/data'
+import {
+  UserResponse,
+  UserProfileResponse,
+  UserProfile,
+  UserPhotoResponse,
+} from '@/types/data'
 import { Toast } from 'antd-mobile'
 // obtain user's personal information
 export const getInformation = (): RootThunkAction => {
@@ -24,11 +29,40 @@ export const updateUser = (
   // userProfile: object
 ): RootThunkAction => {
   return async (diapatch) => {
-    console.log(userProfile)
     await http.patch('/user/profile', userProfile)
     diapatch({ type: 'user/update', payload: userProfile })
+    let displayContent = ''
+    switch (Object.keys(userProfile)[0]) {
+      case 'intro':
+        displayContent = '修改简介完成'
+        break
+      case 'name':
+        displayContent = '修改昵称完成'
+        break
+      case 'gender':
+        displayContent = '修改性别完成'
+        break
+      case 'birthday':
+        displayContent = '修改生日完成'
+        break
+
+      default:
+        break
+    }
     Toast.show({
-      content: '修改昵称完成',
+      content: displayContent,
+      duration: 1000,
+    })
+  }
+}
+// modify the picture
+export const updatePhoto = (data: FormData): RootThunkAction => {
+  return async (dispatch) => {
+    const res = await http.patch<UserPhotoResponse>('/user/photo', data)
+    console.log(res)
+    dispatch({ type: 'user/update', payload: res.data.data })
+    Toast.show({
+      content: '修改头像完成',
       duration: 1000,
     })
   }

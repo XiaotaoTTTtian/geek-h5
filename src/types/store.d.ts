@@ -20,6 +20,7 @@ export type LoginAction =
       payload: Token
     }
   | { type: 'login/getCode' }
+  | { type: 'login/logout' }
 
 export type UserAction =
   | { type: 'user/getInformation'; payload: User }
