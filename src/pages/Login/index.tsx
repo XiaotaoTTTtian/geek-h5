@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux'
 import { getToken, getCodes } from '@/store/actions/login'
 import { AppThunkDispatch } from '@/types/store'
 import styles from './index.module.scss'
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { useEffect, useRef, useState } from 'react'
 import { InputRef } from 'antd-mobile/es/components/input'
 const Login = () => {
@@ -16,12 +16,18 @@ const Login = () => {
   const history = useHistory()
   const [form] = Form.useForm()
   const mobileRef = useRef<InputRef>(null)
+  const location = useLocation<{ from: string }>()
   let clearTimerRef = useRef(-1)
   const [timeLeft, setTimeLeft] = useState(0)
   // login
   const onFinish = async (value: LoginForm) => {
     try {
       await dispatch(getToken(value))
+      console.log(location)
+
+      if (location.state) {
+        return history.replace(location.state.from)
+      }
       history.push('/home/index')
     } catch {}
   }

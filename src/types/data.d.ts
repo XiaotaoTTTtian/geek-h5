@@ -9,6 +9,8 @@ export type Token = {
   refresh_token: string
 }
 export type LoginResponse = ApiResponse<Token>
+// no inductive refresh token
+export type RefreshTokenResponse = ApiResponse<{ token: string }>
 // personal information
 export type User = {
   id: string

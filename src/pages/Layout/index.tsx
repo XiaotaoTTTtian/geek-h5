@@ -7,6 +7,7 @@ import Home from '../Home'
 import Question from '../Question'
 import Video from '../Video'
 import Profile from '../Profile'
+import { AuthRoute } from '@/components/AuthRoute'
 const tabs = [
   { path: '/home/index', icon: 'iconbtn_home', text: '首页' },
   { path: '/home/question', icon: 'iconbtn_qa', text: '问答' },
@@ -29,9 +30,12 @@ const Layout = () => {
       <Route path="/home/video">
         <Video />
       </Route>
-      <Route path="/home/profile">
+      {/* <Route path="/home/profile">
         <Profile />
-      </Route>
+      </Route> */}
+      <AuthRoute path="/home/profile">
+        <Profile />
+      </AuthRoute>
       {/* 使用 antd 的 TabBar 组件，并指定类名 tab-bar */}
       {/* activeKey set initial status */}
       <TabBar
