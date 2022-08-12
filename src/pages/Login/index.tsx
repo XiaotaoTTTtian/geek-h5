@@ -60,10 +60,10 @@ const Login = () => {
   return (
     <div className={styles.root}>
       {/* head navigation bar */}
-      <NavBar></NavBar>
+      <NavBar onBack={() => history.push('/home/index')}></NavBar>
       {/* form list */}
       <div className="login-form">
-        <h2 className="title">账号登录1</h2>
+        <h2 className="title">账号登录</h2>
         <Form
           layout="horizontal"
           mode="card"
