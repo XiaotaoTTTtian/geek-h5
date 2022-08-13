@@ -4,12 +4,14 @@ import ArticleItem from '@/components/ArticleItem'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppThunkDispatch, RootState } from '@/types/store'
 import { getArticleList } from '@/store/actions/article'
+import { useHistory } from 'react-router-dom'
 
 type article = {
   channelId: number
 }
 const ArticleList = ({ channelId }: article) => {
   const dispatch = useDispatch<AppThunkDispatch>()
+  const history = useHistory()
   const { channelArticles } = useSelector((state: RootState) => state.article)
   const { pre_timestamp, results } = channelArticles[channelId] ?? {
     pre_timestamp: Date.now() + '',
@@ -20,13 +22,16 @@ const ArticleList = ({ channelId }: article) => {
   }
   // if pre_timestamp is null, there is no more data
   const hasMore = pre_timestamp !== null
-  console.log(hasMore)
 
   return (
     <div className={styles.root}>
       {/* 文章列表中的每一项 */}
       {results.map((item, index) => (
-        <div className="article-item" key={index}>
+        <div
+          className="article-item"
+          key={index}
+          onClick={() => history.push(`/article/${item.art_id}`)}
+        >
           <ArticleItem {...item} />
         </div>
       ))}

@@ -4,6 +4,7 @@ import { Router, Route, Switch, Redirect } from 'react-router-dom'
 // imported components
 import Login from '@/pages/Login'
 import Layout from './pages/Layout'
+import Article from './pages/Article'
 import ProfileEdit from './pages/Profile/Edit'
 import { AuthRoute } from '@/components/AuthRoute'
 import history from '@/utils/history'
@@ -20,6 +21,9 @@ function App() {
           <AuthRoute path="/profile/edit">
             <ProfileEdit />
           </AuthRoute>
+          <Route path="/article/:artId">
+            <Article />
+          </Route>
         </Switch>
       </div>
     </Router>
