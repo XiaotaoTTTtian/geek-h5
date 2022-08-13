@@ -1,6 +1,6 @@
 import { ThunkAction } from 'redux-thunk'
 import store from '@/store'
-import { Channel, Token, User, UserProfile } from './data'
+import { Articles, Channel, Token, User, UserProfile } from './data'
 // redux specifies the state type of the application
 export type RootState = ReturnType<typeof store.getState>
 //  Create a type for thunk dispatch
@@ -13,7 +13,7 @@ export type AppThunkDispatch = ThunkDispatch<RootState, any, AnyAction>
  */
 export type RootThunkAction = ThunkAction<void, RootState, unknown, RootAction>
 // the type of all actions in the project
-type RootAction = LoginAction | UserAction | Home
+type RootAction = LoginAction | UserAction | HomeAction | ArticleAction
 export type LoginAction =
   | {
       type: 'login/token'
@@ -27,7 +27,7 @@ export type UserAction =
   | { type: 'user/getProfile'; payload: UserProfile }
   | { type: 'user/update'; payload: object }
 
-export type Home =
+export type HomeAction =
   | {
       type: `home/${'getChannels' | 'getRestChannel'}`
       payload: Channel[]
@@ -40,3 +40,10 @@ export type Home =
       type: `home/${'deleteChannel' | 'addChannel'}`
       payload: Channel
     }
+export type ArticleAction = {
+  type: 'home/getArticleList'
+  payload: {
+    channelId: number
+    data: Articles
+  }
+}

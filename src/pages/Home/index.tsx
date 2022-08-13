@@ -1,18 +1,18 @@
 import { Tabs, Popup } from 'antd-mobile'
 import styles from './index.module.scss'
 import { useInitialState } from '@/utils/use-initial-state'
-import { getChannels, ClickHighlighting } from '@/store/actions/home'
+import { getChannels } from '@/store/actions/home'
 import Icon from '@/components/Icon'
 import Channels from './components/Channels'
 import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { AppThunkDispatch } from '@/types/store'
+import ArticleList from './components/ArticleList'
 
 const Home = () => {
   // send and get channel list data
   const { userChannel, channelActiveKey } = useInitialState(getChannels, 'home')
   const [visible, setVisible] = useState(false)
-  // click to switch the highlighting effect
   const dispatch = useDispatch<AppThunkDispatch>()
   return (
     <div className={styles.root}>
@@ -27,7 +27,7 @@ const Home = () => {
       >
         {userChannel.map((item) => (
           <Tabs.Tab title={item.name} key={item.id}>
-            {item.name}
+            <ArticleList channelId={item.id} />
           </Tabs.Tab>
         ))}
       </Tabs>

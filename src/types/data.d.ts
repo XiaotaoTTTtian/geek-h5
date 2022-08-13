@@ -44,3 +44,20 @@ export type Channels = {
   channels: Channel[]
 }
 export type ChannelResponse = ApiResponse<Channels>
+// article list data type
+export type Articles = {
+  pre_timestamp: string
+  results: {
+    art_id: string
+    aut_id: string
+    aut_name: string
+    comm_count: number
+    cover: {
+      type: number
+      images: string[]
+    }
+    pubdate: string
+    title: string
+  }[]
+}
+export type ArticlesResponse = ApiResponse<Articles>

@@ -1,5 +1,5 @@
 import { Channel } from '@/types/data'
-import { Home } from '@/types/store'
+import { HomeAction } from '@/types/store'
 import sortBy from 'lodash/sortBy'
 type HomeState = {
   userChannel: Channel[]
@@ -11,7 +11,7 @@ const initialState: HomeState = {
   restChannel: [],
   channelActiveKey: 0,
 }
-export const home = (state = initialState, action: Home): HomeState => {
+export const home = (state = initialState, action: HomeAction): HomeState => {
   switch (action.type) {
     // get channel list data
     case 'home/getChannels':
