@@ -8,12 +8,14 @@ import { useState } from 'react'
 import { useDispatch } from 'react-redux'
 import { AppThunkDispatch } from '@/types/store'
 import ArticleList from './components/ArticleList'
+import { useHistory } from 'react-router-dom'
 
 const Home = () => {
   // send and get channel list data
   const { userChannel, channelActiveKey } = useInitialState(getChannels, 'home')
   const [visible, setVisible] = useState(false)
   const dispatch = useDispatch<AppThunkDispatch>()
+  const history = useHistory()
   return (
     <div className={styles.root}>
       {/* 频道 Tabs 列表 */}
@@ -32,7 +34,7 @@ const Home = () => {
         ))}
       </Tabs>
       <div className="tabs-opration">
-        <Icon type="iconbtn_search" />
+        <Icon type="iconbtn_search" onClick={() => history.push('/search')} />
         <Icon type="iconbtn_channel" onClick={() => setVisible(true)} />
       </div>
 

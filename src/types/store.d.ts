@@ -1,6 +1,13 @@
 import { ThunkAction } from 'redux-thunk'
 import store from '@/store'
-import { Articles, Channel, Token, User, UserProfile } from './data'
+import {
+  Articles,
+  Channel,
+  SearchSuggestion,
+  Token,
+  User,
+  UserProfile,
+} from './data'
 // redux specifies the state type of the application
 export type RootState = ReturnType<typeof store.getState>
 //  Create a type for thunk dispatch
@@ -13,7 +20,12 @@ export type AppThunkDispatch = ThunkDispatch<RootState, any, AnyAction>
  */
 export type RootThunkAction = ThunkAction<void, RootState, unknown, RootAction>
 // the type of all actions in the project
-type RootAction = LoginAction | UserAction | HomeAction | ArticleAction
+type RootAction =
+  | LoginAction
+  | UserAction
+  | HomeAction
+  | ArticleAction
+  | SearchAction
 export type LoginAction =
   | {
       type: 'login/token'
@@ -47,3 +59,11 @@ export type ArticleAction = {
     data: Articles
   }
 }
+export type SearchAction =
+  | {
+      type: 'search/suggestion'
+      payload: SearchSuggestion['options']
+    }
+  | {
+      type: 'search/clearSuggestion'
+    }

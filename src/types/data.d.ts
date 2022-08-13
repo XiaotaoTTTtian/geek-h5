@@ -61,3 +61,8 @@ export type Articles = {
   }[]
 }
 export type ArticlesResponse = ApiResponse<Articles>
+
+export type SearchSuggestion = {
+  options: string[]
+}
+export type SearchSuggestionResponse = ApiResponse<SearchSuggestion>

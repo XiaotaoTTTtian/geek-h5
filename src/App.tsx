@@ -2,12 +2,15 @@ import './App.scss'
 // route
 import { Router, Route, Switch, Redirect } from 'react-router-dom'
 // imported components
+
+import { AuthRoute } from '@/components/AuthRoute'
+import history from '@/utils/history'
 import Login from '@/pages/Login'
 import Layout from './pages/Layout'
 import Article from './pages/Article'
 import ProfileEdit from './pages/Profile/Edit'
-import { AuthRoute } from '@/components/AuthRoute'
-import history from '@/utils/history'
+import Search from './pages/Search'
+import SearchResult from './pages/Search/Result'
 
 function App() {
   return (
@@ -23,6 +26,12 @@ function App() {
           </AuthRoute>
           <Route path="/article/:artId">
             <Article />
+          </Route>
+          <Route exact path="/search">
+            <Search />
+          </Route>
+          <Route path="/search/result">
+            <SearchResult />
           </Route>
         </Switch>
       </div>
