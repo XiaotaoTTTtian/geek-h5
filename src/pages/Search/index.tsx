@@ -15,7 +15,6 @@ const SearchPage = () => {
   const [searchInput, setSearchInput] = useState('')
   const dispatch = useDispatch<AppThunkDispatch>()
   const { suggestion } = useSelector((state: RootState) => state.search)
-  console.log(suggestion)
   // search suggestions
   const onSearch = (value: string): void => {
     setSearchInput(value)
@@ -34,12 +33,50 @@ const SearchPage = () => {
       wait: 500,
     }
   )
+  // associate keyword highlighting
+  const highlightingSuggestion = suggestion.map((item) => {
+    if (item === null) {
+      suggestion.length = 0
+      return {
+        left: '',
+        search: '',
+        right: '',
+      }
+    }
+
+    // convert to lowercase
+    const lowerCaseItem = item.toLocaleLowerCase()
+    const lowerCaseSearchTxt = searchInput.toLocaleLowerCase()
+    const index = lowerCaseItem.indexOf(lowerCaseSearchTxt)
+    const searchTxtLength = searchInput.length
+    const left = item.slice(0, index)
+    const search = item.slice(index, index + searchTxtLength)
+    const right = item.slice(index + searchTxtLength)
+    return {
+      left,
+      search,
+      right,
+    }
+  })
+  // get search results
+  const onSearchResult = (value: string) => {
+    dispatch(clearSuggestion())
+    history.push(`/search/result?q=${value}`)
+  }
+
   return (
     <div className={styles.root}>
       <NavBar
         className="navbar"
         onBack={() => history.go(-1)}
-        right={<span className="search-text">搜索</span>}
+        right={
+          <span
+            className="search-text"
+            onClick={() => onSearchResult(searchInput)}
+          >
+            搜索
+          </span>
+        }
       >
         <SearchBar
           placeholder="请输入关键字搜索"
@@ -78,13 +115,19 @@ const SearchPage = () => {
           suggestion.length > 0 ? 'show' : ''
         )}
       >
-        {suggestion.map((item, index) => (
-          <div className="result-item" key={index}>
+        {highlightingSuggestion.map((item, index) => (
+          <div
+            className="result-item"
+            key={index}
+            onClick={() => onSearchResult(item.left + item.search + item.right)}
+          >
             <Icon className="icon-search" type="iconbtn_search" />
             <div className="result-value text-overflow">
               {/* <span>黑马</span>
            程序员 */}
-              {item}
+              {item.left}
+              <span> {item.search} </span>
+              {item.right}
             </div>
           </div>
         ))}
