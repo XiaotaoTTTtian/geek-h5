@@ -5,14 +5,17 @@ import { useDebounceFn } from 'ahooks'
 
 import Icon from '@/components/Icon'
 import styles from './index.module.scss'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppThunkDispatch, RootState } from '@/types/store'
 import { getSuggestion, clearSuggestion } from '@/store/actions/search'
 
+const GEEK_SEARCH_KEY = 'geek-search-history'
 const SearchPage = () => {
   const history = useHistory()
   const [searchInput, setSearchInput] = useState('')
+  const [searchHistory, setSearchHistory] = useState<string[]>([])
+  const [flag, setFlag] = useState(true)
   const dispatch = useDispatch<AppThunkDispatch>()
   const { suggestion } = useSelector((state: RootState) => state.search)
   // search suggestions
@@ -22,12 +25,16 @@ const SearchPage = () => {
       // dispatch
       return dispatch(clearSuggestion())
     }
+
     run()
   }
   // image stabilization function
   const { run } = useDebounceFn(
     () => {
-      dispatch(getSuggestion(searchInput))
+      // no more execution after jumping to the search results page
+      if (flag) {
+        dispatch(getSuggestion(searchInput))
+      }
     },
     {
       wait: 500,
@@ -61,8 +68,46 @@ const SearchPage = () => {
   // get search results
   const onSearchResult = (value: string) => {
     dispatch(clearSuggestion())
+    setFlag(false)
     history.push(`/search/result?q=${value}`)
+    saveHistories(value)
   }
+  // save the history
+  const saveHistories = (value: string) => {
+    let localHistory = JSON.parse(
+      localStorage.getItem(GEEK_SEARCH_KEY) ?? '[]'
+    ) as string[]
+    if (localHistory.length === 0) {
+      localHistory.push(value)
+    } else {
+      localHistory = localHistory.filter((item: string) => item !== value)
+      localHistory.unshift(value)
+    }
+    setSearchHistory(localHistory)
+    localStorage.setItem(GEEK_SEARCH_KEY, JSON.stringify(localHistory))
+  }
+  // when the page is displayed, the history is obtained from the local cache
+  useEffect(() => {
+    let localHistory = JSON.parse(
+      localStorage.getItem(GEEK_SEARCH_KEY) ?? '[]'
+    ) as string[]
+    setSearchHistory(localHistory)
+  }, [])
+  // delete and clear historical records
+  const deleteHistory = (value: string, type: string) => {
+    console.log('ooo')
+
+    if (type === 'single') {
+      let newLocalHistory = searchHistory.filter((item) => item !== value)
+      localStorage.setItem(GEEK_SEARCH_KEY, JSON.stringify(newLocalHistory))
+      setSearchHistory(newLocalHistory)
+    } else {
+      console.log('all')
+      setSearchHistory([])
+      localStorage.removeItem(GEEK_SEARCH_KEY)
+    }
+  }
+  console.log(suggestion)
 
   return (
     <div className={styles.root}>
@@ -85,26 +130,31 @@ const SearchPage = () => {
         />
       </NavBar>
 
-      {true && (
+      {suggestion.length <= 0 && (
         <div
           className="history"
           style={{
-            display: true ? 'none' : 'block',
+            display: searchHistory.length > 0 ? 'block' : 'none',
           }}
         >
           <div className="history-header">
             <span>搜索历史</span>
-            <span>
+            <span onClick={() => deleteHistory('', 'all')}>
               <Icon type="iconbtn_del" />
               清除全部
             </span>
           </div>
 
           <div className="history-list">
-            <span className="history-item">
-              <span className="text-overflow">黑马程序员</span>
-              <Icon type="iconbtn_essay_close" />
-            </span>
+            {searchHistory.map((item, index) => (
+              <span className="history-item" key={index}>
+                <span className="text-overflow"> {item} </span>
+                <Icon
+                  type="iconbtn_essay_close"
+                  onClick={() => deleteHistory(item, 'single')}
+                />
+              </span>
+            ))}
           </div>
         </div>
       )}
