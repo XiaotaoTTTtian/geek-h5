@@ -1,18 +1,28 @@
-import { useHistory } from 'react-router-dom'
+import { useHistory, useLocation } from 'react-router-dom'
 import { NavBar } from 'antd-mobile'
 
 import styles from './index.module.scss'
-import { useDispatch } from 'react-redux'
-import { AppThunkDispatch } from '@/types/store'
+import { useDispatch, useSelector } from 'react-redux'
+import { AppThunkDispatch, RootState } from '@/types/store'
 import { useEffect } from 'react'
 import { clearSuggestion } from '@/store/actions/search'
 
 const Result = () => {
   const history = useHistory()
   const dispatch = useDispatch<AppThunkDispatch>()
+  const location = useLocation()
+  const { suggestion } = useSelector((state: RootState) => state.search)
+  const params = new URLSearchParams(location.search)
+  const q = params.get('q') ?? ''
+  console.log(suggestion)
+
+  // clearing search suggestions
   useEffect(() => {
     dispatch(clearSuggestion())
-  }, [])
+  }, [suggestion])
+  useEffect(() => {
+    // dispatch(getSearchResult())
+  }, [dispatch])
   const renderArticleList = () => {
     return [].map((item, index) => {
       const {
