@@ -1,13 +1,18 @@
 import { useHistory } from 'react-router-dom'
 import { NavBar } from 'antd-mobile'
 
-import ArticleItem from '@/components/ArticleItem'
-
 import styles from './index.module.scss'
+import { useDispatch } from 'react-redux'
+import { AppThunkDispatch } from '@/types/store'
+import { useEffect } from 'react'
+import { clearSuggestion } from '@/store/actions/search'
 
 const Result = () => {
   const history = useHistory()
-
+  const dispatch = useDispatch<AppThunkDispatch>()
+  useEffect(() => {
+    dispatch(clearSuggestion())
+  }, [])
   const renderArticleList = () => {
     return [].map((item, index) => {
       const {

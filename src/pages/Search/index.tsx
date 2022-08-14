@@ -33,6 +33,8 @@ const SearchPage = () => {
     () => {
       // no more execution after jumping to the search results page
       if (flag) {
+        console.log('getSuggestion')
+
         dispatch(getSuggestion(searchInput))
       }
     },
@@ -67,9 +69,9 @@ const SearchPage = () => {
   })
   // get search results
   const onSearchResult = (value: string) => {
-    dispatch(clearSuggestion())
     setFlag(false)
     history.push(`/search/result?q=${value}`)
+    dispatch(clearSuggestion())
     saveHistories(value)
   }
   // save the history
