@@ -13,7 +13,8 @@ import Icon from '@/components/Icon'
 import { useInitialState } from '@/utils/use-initial-state'
 import { getArticleById } from '@/store/actions/article'
 import { useEffect, useRef, useState } from 'react'
-
+import CommentFooter from './components/CommentFooter'
+const NAV_BAR_HEIGTH = 100
 const Article = () => {
   const history = useHistory()
   const params = useParams<{ artId: string }>()
@@ -21,6 +22,8 @@ const Article = () => {
   const wrapperRef = useRef<HTMLDivElement>(null)
   const authorRef = useRef<HTMLDivElement>(null)
   const [showNavAuthor, setShowNavAuthor] = useState(false)
+  const commentRef = useRef<HTMLDivElement>(null)
+  const isShowComment = useRef(false)
   const loadMoreComments = async () => {
     console.log('加载更多评论')
   }
@@ -59,7 +62,7 @@ const Article = () => {
     // create a throttle function
     const handleScroll = throttle(() => {
       const { top } = authorRef.current!.getBoundingClientRect()
-      if (top + 100 <= 0) {
+      if (top + NAV_BAR_HEIGTH <= 0) {
         setShowNavAuthor(true)
       } else {
         setShowNavAuthor(false)
@@ -94,6 +97,23 @@ const Article = () => {
         <rect x="16" y="166" rx="0" ry="0" width="340" height="15" />
       </ContentLoader>
     )
+  }
+  // show or hide comments
+  const onShowComment = () => {
+    const wrapper = wrapperRef.current
+    if (!wrapper) return
+    const comment = commentRef.current
+    if (!comment) return
+    if (!isShowComment.current) {
+      wrapper.scroll({
+        top: comment.offsetTop - NAV_BAR_HEIGTH,
+        behavior: 'auto',
+      })
+      isShowComment.current = true
+    } else {
+      wrapper.scrollTo(0, 0)
+      isShowComment.current = false
+    }
   }
   const renderArticle = () => {
     // 文章详情
@@ -141,7 +161,7 @@ const Article = () => {
         </div>
 
         <div className="comment">
-          <div className="comment-header">
+          <div className="comment-header" ref={commentRef}>
             <span>全部评论（10）</span>
             <span>20 点赞</span>
           </div>
@@ -190,6 +210,7 @@ const Article = () => {
         {/* 文章详情和评论 */}
         {renderArticle()}
         {/* 底部评论栏 */}
+        <CommentFooter onShowComment={onShowComment} />
         {/* <CommentInput /> */}
       </div>
     </div>

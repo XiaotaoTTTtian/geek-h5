@@ -5,29 +5,10 @@ type Props = {
   // normal 普通评论
   // reply 回复评论
   type?: 'normal' | 'reply'
-  // 评论数量
-  comm_count: number
-  // 评论图标的点击事件
-  onShowComment: () => void
-  // 是否收藏的状态
-  is_collected: boolean
-  // 收藏按钮的点击事件
-  onCollected: () => void
-  // 是否点赞
-  attitude: number
-  // 是否点赞
-  onLike: () => void
+  onShowComment?: () => void
 }
 
-const CommentFooter = ({
-  type = 'normal',
-  comm_count,
-  onShowComment,
-  is_collected,
-  onCollected,
-  attitude,
-  onLike,
-}: Props) => {
+const CommentFooter = ({ type = 'normal', onShowComment }: Props) => {
   return (
     <div className={styles.root}>
       <div className="input-btn">
@@ -40,26 +21,22 @@ const CommentFooter = ({
           <div className="action-item" onClick={onShowComment}>
             <Icon type="iconbtn_comment" />
             <p>评论</p>
-            {!!1 && <span className="bage">{comm_count}</span>}
+            {!!1 && <span className="bage">1</span>}
           </div>
-          <div className="action-item" onClick={onLike}>
-            <Icon
-              type={attitude === 1 ? 'iconbtn_like_sel' : 'iconbtn_like2'}
-            />
+          <div className="action-item">
+            <Icon type={true ? 'iconbtn_like_sel' : 'iconbtn_like2'} />
             <p>点赞</p>
           </div>
-          <div className="action-item" onClick={onCollected}>
-            <Icon
-              type={is_collected ? 'iconbtn_collect_sel' : 'iconbtn_collect'}
-            />
+          <div className="action-item">
+            <Icon type={true ? 'iconbtn_collect_sel' : 'iconbtn_collect'} />
             <p>收藏</p>
           </div>
         </>
       )}
 
       {type === 'reply' && (
-        <div className="action-item" onClick={onLike}>
-          <Icon type={attitude === 1 ? 'iconbtn_like_sel' : 'iconbtn_like2'} />
+        <div className="action-item">
+          <Icon type={true ? 'iconbtn_like_sel' : 'iconbtn_like2'} />
           <p>点赞</p>
         </div>
       )}
