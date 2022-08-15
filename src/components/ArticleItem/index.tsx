@@ -48,8 +48,8 @@ const ArticleItem = ({
                   src={item}
                   alt=""
                   style={{
-                    '--height': '110px',
-                    '--width': '75px',
+                    '--height': '89px',
+                    '--width': '89px',
                   }}
                 />
               </div>

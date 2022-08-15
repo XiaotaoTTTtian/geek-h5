@@ -11,9 +11,16 @@ import ContentLoader from 'react-content-loader'
 import throttle from 'lodash/throttle'
 import Icon from '@/components/Icon'
 import { useInitialState } from '@/utils/use-initial-state'
-import { getArticleById } from '@/store/actions/article'
+import {
+  getArticleById,
+  followAuthor,
+  collectArticle,
+  likeArticle,
+} from '@/store/actions/article'
 import { useEffect, useRef, useState } from 'react'
 import CommentFooter from './components/CommentFooter'
+import { useDispatch } from 'react-redux'
+import { AppThunkDispatch } from '@/types/store'
 const NAV_BAR_HEIGTH = 100
 const Article = () => {
   const history = useHistory()
@@ -24,6 +31,7 @@ const Article = () => {
   const [showNavAuthor, setShowNavAuthor] = useState(false)
   const commentRef = useRef<HTMLDivElement>(null)
   const isShowComment = useRef(false)
+  const dispatch = useDispatch<AppThunkDispatch>()
   const loadMoreComments = async () => {
     console.log('加载更多评论')
   }
@@ -115,6 +123,18 @@ const Article = () => {
       isShowComment.current = false
     }
   }
+  // pay attention to the author
+  const onFollow = () => {
+    dispatch(followAuthor(detail.art_id, detail.is_followed))
+  }
+  // collection of articles
+  const onCollected = () => {
+    dispatch(collectArticle(detail.art_id, detail.is_collected))
+  }
+  // the article thumb up
+  const onLike = () => {
+    dispatch(likeArticle(detail.art_id, detail.attitude))
+  }
   const renderArticle = () => {
     // 文章详情
     return (
@@ -143,6 +163,7 @@ const Article = () => {
                   'follow',
                   detail.is_followed ? 'followed' : ''
                 )}
+                onClick={onFollow}
               >
                 {detail.is_followed ? '已关注' : '关注'}
               </span>
@@ -173,7 +194,6 @@ const Article = () => {
       </div>
     )
   }
-  console.log(showNavAuthor)
 
   return (
     <div className={styles.root}>
@@ -201,6 +221,7 @@ const Article = () => {
                   'follow',
                   detail.is_followed ? 'followed' : ''
                 )}
+                onClick={onFollow}
               >
                 {detail.is_followed ? '已关注' : '关注'}
               </span>
@@ -210,7 +231,14 @@ const Article = () => {
         {/* 文章详情和评论 */}
         {renderArticle()}
         {/* 底部评论栏 */}
-        <CommentFooter onShowComment={onShowComment} />
+        <CommentFooter
+          onShowComment={onShowComment}
+          comment={detail.comm_count}
+          is_collected={detail.is_collected}
+          onCollected={onCollected}
+          attitude={detail.attitude}
+          onLike={onLike}
+        />
         {/* <CommentInput /> */}
       </div>
     </div>

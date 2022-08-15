@@ -66,6 +66,13 @@ export type ArticleAction =
       type: 'article/get'
       payload: ArticleDetail
     }
+  | {
+      type: 'article/updateInfo'
+      payload: {
+        name: 'is_followed' | 'is_collected' | 'attitude'
+        value: boolean | number
+      }
+    }
 export type SearchAction =
   | {
       type: 'search/suggestion'

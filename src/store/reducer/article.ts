@@ -42,6 +42,15 @@ export const article = (
         ...state,
         detail: action.payload,
       }
+    // update information
+    case 'article/updateInfo':
+      return {
+        ...state,
+        detail: {
+          ...state.detail,
+          [action.payload.name]: action.payload.value,
+        },
+      }
     default:
       return state
   }
