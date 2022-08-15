@@ -5,9 +5,12 @@ import styles from './index.module.scss'
 // import CommentInput from '../CommentInput'
 
 import DOMPurify from 'dompurify'
+import hljs from 'highlight.js'
+import 'highlight.js/styles/github.css'
 import Icon from '@/components/Icon'
 import { useInitialState } from '@/utils/use-initial-state'
 import { getArticleById } from '@/store/actions/article'
+import { useEffect } from 'react'
 
 const Article = () => {
   const history = useHistory()
@@ -21,7 +24,27 @@ const Article = () => {
     'article'
   )
   // console.log(detail)
-
+  useEffect(() => {
+    const dgHtmlDOM = document.querySelector('.dg-html')
+    const codes = dgHtmlDOM?.querySelectorAll<HTMLElement>('pre code')
+    if (codes && codes.length > 0) {
+      codes.forEach((el) => {
+        // let each code content implement code highlighting
+        hljs.highlightElement(el)
+      })
+      return
+    }
+    hljs.configure({
+      // ignore the warning
+      ignoreUnescapedHTML: true,
+    })
+    const pres = dgHtmlDOM?.querySelectorAll('pre')
+    if (pres && pres.length > 0) {
+      pres.forEach((el) => {
+        hljs.highlightElement(el)
+      })
+    }
+  }, [detail])
   const renderArticle = () => {
     // 文章详情
     return (
