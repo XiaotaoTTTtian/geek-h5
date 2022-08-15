@@ -4,6 +4,7 @@ import classNames from 'classnames'
 import styles from './index.module.scss'
 // import CommentInput from '../CommentInput'
 
+import DOMPurify from 'dompurify'
 import Icon from '@/components/Icon'
 import { useInitialState } from '@/utils/use-initial-state'
 import { getArticleById } from '@/store/actions/article'
@@ -56,7 +57,12 @@ const Article = () => {
           </div>
 
           <div className="content">
-            <div className="content-html dg-html" />
+            <div
+              className="content-html dg-html"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(detail.content),
+              }}
+            />
             <div className="date">发布文章时间：{detail.pubdate}</div>
           </div>
         </div>
