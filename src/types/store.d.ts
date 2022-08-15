@@ -1,3 +1,4 @@
+import { ArticleDetail } from './data.d'
 import { ThunkAction } from 'redux-thunk'
 import store from '@/store'
 import {
@@ -7,6 +8,7 @@ import {
   Token,
   User,
   UserProfile,
+  SearchResult,
 } from './data'
 // redux specifies the state type of the application
 export type RootState = ReturnType<typeof store.getState>
@@ -52,13 +54,18 @@ export type HomeAction =
       type: `home/${'deleteChannel' | 'addChannel'}`
       payload: Channel
     }
-export type ArticleAction = {
-  type: 'home/getArticleList'
-  payload: {
-    channelId: number
-    data: Articles
-  }
-}
+export type ArticleAction =
+  | {
+      type: 'home/getArticleList'
+      payload: {
+        channelId: number
+        data: Articles
+      }
+    }
+  | {
+      type: 'article/get'
+      payload: ArticleDetail
+    }
 export type SearchAction =
   | {
       type: 'search/suggestion'
@@ -66,4 +73,8 @@ export type SearchAction =
     }
   | {
       type: 'search/clearSuggestion'
+    }
+  | {
+      type: 'search/getSearchResult'
+      payload: SearchResult
     }

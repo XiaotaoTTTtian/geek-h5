@@ -1,6 +1,6 @@
 import { AppThunkDispatch, RootState } from '@/types/store'
 import { useDispatch, useSelector } from 'react-redux'
-import { useEffect } from 'react'
+import { useEffect, useRef } from 'react'
 /**
  * @param action the action function that was passed in
  * @param stateName either of the state names in RootState && generic function
@@ -14,8 +14,11 @@ export const useInitialState = <StateName extends keyof RootState>(
 ) => {
   const dispatch = useDispatch<AppThunkDispatch>()
   const state = useSelector((state: RootState) => state[stateName])
+  const actionRef = useRef(action)
+
   useEffect(() => {
-    dispatch(action())
-  }, [dispatch, action])
+    const actionFn = actionRef.current
+    dispatch(actionFn())
+  }, [dispatch])
   return state
 }

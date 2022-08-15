@@ -66,3 +66,30 @@ export type SearchSuggestion = {
   options: string[]
 }
 export type SearchSuggestionResponse = ApiResponse<SearchSuggestion>
+
+// search result
+export type SearchResult = {
+  page: number
+  per_page: number
+  total_count: number
+  results: Articles['results']
+}
+export type SearchResultResponse = ApiResponse<SearchResult>
+// article details data type
+export type ArticleDetail = {
+  art_id: string
+  title: string
+  pubdate: string
+  aut_id: string
+  aut_name: string
+  aut_photo: string
+  is_followed: boolean
+  attitude: number
+  content: string
+  is_collected: boolean
+  // 接口中缺失
+  comm_count: number
+  like_count: number
+  read_count: number
+}
+export type ArticleDetailResponse = ApiResponse<ArticleDetail>

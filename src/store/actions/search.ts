@@ -1,4 +1,4 @@
-import { SearchSuggestionResponse } from '@/types/data'
+import { SearchResultResponse, SearchSuggestionResponse } from '@/types/data'
 import { RootThunkAction } from '@/types/store'
 import { http } from '@/utils'
 
@@ -18,5 +18,19 @@ export const getSuggestion = (value: string): RootThunkAction => {
 export const clearSuggestion = (): RootThunkAction => {
   return (dispatch) => {
     dispatch({ type: 'search/clearSuggestion' })
+  }
+}
+// get search result data
+export const getSearchResult = (q: string): RootThunkAction => {
+  return async (dispatch) => {
+    console.log(q)
+    const res = await http.get<SearchResultResponse>('/search', {
+      params: {
+        q,
+        page: 1,
+      },
+    })
+    console.log(res)
+    dispatch({ type: 'search/getSearchResult', payload: res.data.data })
   }
 }

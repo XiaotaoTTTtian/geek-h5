@@ -3,6 +3,7 @@ import dayjs from 'dayjs'
 import 'dayjs/locale/zh-cn'
 import relativeTime from 'dayjs/plugin/relativeTime'
 import Icon from '@/components/Icon'
+import { Image } from 'antd-mobile'
 
 import styles from './index.module.scss'
 
@@ -42,7 +43,15 @@ const ArticleItem = ({
           <div className="article-imgs">
             {cover.images.map((item, index) => (
               <div key={index} className="article-img-wrapper">
-                <img src={item} alt="" />
+                <Image
+                  lazy={true}
+                  src={item}
+                  alt=""
+                  style={{
+                    '--height': '110px',
+                    '--width': '75px',
+                  }}
+                />
               </div>
             ))}
           </div>

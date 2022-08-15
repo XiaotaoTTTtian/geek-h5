@@ -5,7 +5,9 @@ import styles from './index.module.scss'
 import { useDispatch, useSelector } from 'react-redux'
 import { AppThunkDispatch, RootState } from '@/types/store'
 import { useEffect } from 'react'
-import { clearSuggestion } from '@/store/actions/search'
+import { clearSuggestion, getSearchResult } from '@/store/actions/search'
+import { useInitialState } from '@/utils/use-initial-state'
+import ArticleItem from '@/components/ArticleItem'
 
 const Result = () => {
   const history = useHistory()
@@ -13,43 +15,32 @@ const Result = () => {
   const location = useLocation()
   const { suggestion } = useSelector((state: RootState) => state.search)
   const params = new URLSearchParams(location.search)
+  // console.log(location)
+
+  // obtaining query paramters
   const q = params.get('q') ?? ''
-  console.log(suggestion)
 
   // clearing search suggestions
   useEffect(() => {
     dispatch(clearSuggestion())
-  }, [suggestion])
-  useEffect(() => {
-    // dispatch(getSearchResult())
-  }, [dispatch])
+  }, [dispatch, suggestion])
+  // request and retrieve data
+  const {
+    searchResults: { results },
+  } = useInitialState(() => getSearchResult(q), 'search')
+  // console.log(searchResults)
+  const list = results ?? []
+  // console.log(results)
+
   const renderArticleList = () => {
-    return [].map((item, index) => {
-      const {
-        title,
-        pubdate,
-        comm_count,
-        aut_name,
-        art_id,
-        cover: { type, images },
-      } = item
-
-      const articleData = {
-        title,
-        pubdate,
-        comm_count,
-        aut_name,
-        type,
-        images,
-      }
-
+    return list.map((item, index) => {
       return (
         <div
           key={index}
           className="article-item"
-          onClick={() => history.push(`/article/${art_id}`)}
+          onClick={() => history.push(`/article/${item.art_id}`)}
         >
-          {/* <ArticleItem {...articleData} /> */}
+          <ArticleItem {...item} />
         </div>
       )
     })
