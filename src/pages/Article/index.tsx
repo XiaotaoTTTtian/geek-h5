@@ -1,5 +1,5 @@
 import { NavBar, InfiniteScroll } from 'antd-mobile'
-import { useHistory, useLocation, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './index.module.scss'
 // import CommentInput from '../CommentInput'
@@ -8,15 +8,19 @@ import DOMPurify from 'dompurify'
 import hljs from 'highlight.js'
 import 'highlight.js/styles/github.css'
 import ContentLoader from 'react-content-loader'
+import throttle from 'lodash/throttle'
 import Icon from '@/components/Icon'
 import { useInitialState } from '@/utils/use-initial-state'
 import { getArticleById } from '@/store/actions/article'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 
 const Article = () => {
   const history = useHistory()
   const params = useParams<{ artId: string }>()
   const [load, setLoad] = useState(true)
+  const wrapperRef = useRef<HTMLDivElement>(null)
+  const authorRef = useRef<HTMLDivElement>(null)
+  const [showNavAuthor, setShowNavAuthor] = useState(false)
   const loadMoreComments = async () => {
     console.log('加载更多评论')
   }
@@ -48,8 +52,23 @@ const Article = () => {
       })
     }
   }, [detail])
-  console.log(load)
+  // the author information is displayed in the navigation bar
+  useEffect(() => {
+    if (load) return
+    const wrapperDOM = wrapperRef.current!
+    // create a throttle function
+    const handleScroll = throttle(() => {
+      const { top } = authorRef.current!.getBoundingClientRect()
+      if (top + 100 <= 0) {
+        setShowNavAuthor(true)
+      } else {
+        setShowNavAuthor(false)
+      }
+    }, 100)
 
+    wrapperDOM.addEventListener('scroll', handleScroll)
+    return () => wrapperDOM.removeEventListener('scroll', handleScroll)
+  }, [load, showNavAuthor])
   // effect of loading
   if (load) {
     return (
@@ -79,8 +98,8 @@ const Article = () => {
   const renderArticle = () => {
     // 文章详情
     return (
-      <div className="wrapper">
-        <div className="article-wrapper">
+      <div className="wrapper" ref={wrapperRef}>
+        <div className="article-wrapper" ref={authorRef}>
           <div className="header">
             <h1 className="title">{detail.title}</h1>
 
@@ -134,6 +153,7 @@ const Article = () => {
       </div>
     )
   }
+  console.log(showNavAuthor)
 
   return (
     <div className={styles.root}>
@@ -146,7 +166,7 @@ const Article = () => {
             </span>
           }
         >
-          {true && (
+          {showNavAuthor && (
             <div className="nav-author">
               <img
                 src={
