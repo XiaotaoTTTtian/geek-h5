@@ -1,4 +1,4 @@
-import { NavBar, InfiniteScroll } from 'antd-mobile'
+import { NavBar, InfiniteScroll, Popup } from 'antd-mobile'
 import { useHistory, useParams } from 'react-router-dom'
 import classNames from 'classnames'
 import styles from './index.module.scss'
@@ -16,12 +16,32 @@ import {
   followAuthor,
   collectArticle,
   likeArticle,
+  getArticleComent,
+  getMoreArticleComments,
+  addArticleComment,
+  likeComment,
+  updateCommentCount,
 } from '@/store/actions/article'
 import { useEffect, useRef, useState } from 'react'
 import CommentFooter from './components/CommentFooter'
 import { useDispatch } from 'react-redux'
 import { AppThunkDispatch } from '@/types/store'
+import NoneComment from '@/components/NoneComment'
+import CommentItem from './components/CommentItem'
+import CommentInput from './components/CommentInput'
+import { ArtComment } from '@/types/data'
+import Reply from '@/components/Reply'
 const NAV_BAR_HEIGTH = 100
+// create an enumeration to represent the comment type
+enum CommentType {
+  Article = 'a',
+  Comment = 'c',
+}
+// comment reply status type
+type CommentReply = {
+  visible: boolean
+  commentItem: ArtComment
+}
 const Article = () => {
   const history = useHistory()
   const params = useParams<{ artId: string }>()
@@ -32,15 +52,24 @@ const Article = () => {
   const commentRef = useRef<HTMLDivElement>(null)
   const isShowComment = useRef(false)
   const dispatch = useDispatch<AppThunkDispatch>()
+  const [commentVisible, setCommentVisible] = useState(false)
+  const [commentReply, setCommentReply] = useState<CommentReply>({
+    visible: false,
+    commentItem: {} as ArtComment,
+  })
   const loadMoreComments = async () => {
-    console.log('加载更多评论')
+    await dispatch(
+      getMoreArticleComments(CommentType.Article, params.artId, comment.last_id)
+    )
   }
   // get article detaile
-  const { detail } = useInitialState(
+  const { detail, comment } = useInitialState(
     () => getArticleById(params.artId),
     'article',
     () => setLoad(false)
   )
+  const hasMoreComment = comment.end_id !== comment.last_id
+
   // the content of the article is highlighted
   useEffect(() => {
     const dgHtmlDOM = document.querySelector('.dg-html')
@@ -80,6 +109,10 @@ const Article = () => {
     wrapperDOM.addEventListener('scroll', handleScroll)
     return () => wrapperDOM.removeEventListener('scroll', handleScroll)
   }, [load, showNavAuthor])
+  // first time: Get the review data
+  useEffect(() => {
+    dispatch(getArticleComent(CommentType.Article, params.artId))
+  }, [dispatch, params.artId])
   // effect of loading
   if (load) {
     return (
@@ -135,6 +168,66 @@ const Article = () => {
   const onLike = () => {
     dispatch(likeArticle(detail.art_id, detail.attitude))
   }
+  // hide comments popup layer
+  const onCommentHide = () => setCommentVisible(false)
+  // add a comment
+  const onAddComment = async (value: string) => {
+    await dispatch(addArticleComment(detail.art_id, value))
+    onCommentHide()
+  }
+  // comments on the thumb up
+  const onThumbsUp = async (id: string, is_liking: boolean) => {
+    await dispatch(likeComment(id, is_liking))
+  }
+  // open comment reply
+  const onCommentReplyShow = (commentItem: ArtComment) => {
+    // console.log(11)
+    setCommentReply({
+      visible: true,
+      commentItem,
+    })
+  }
+  // close comment reply
+  const onCommentReplyHide = () => {
+    setCommentReply({
+      ...commentReply,
+      visible: false,
+    })
+  }
+  const onCloseReplyWithUpdate = (commentId: string, total: number) => {
+    dispatch(updateCommentCount(commentId, total))
+    onCommentReplyHide()
+  }
+  // article comments pop up
+  const renderCommentPopup = () => {
+    return (
+      <Popup visible={commentVisible} bodyStyle={{ height: '100vh' }}>
+        <CommentInput onClose={onCommentHide} onAddComment={onAddComment} />
+      </Popup>
+    )
+  }
+  // comment reply popup layer
+  const renderCommentReplyPopup = () => {
+    const currentIsLike = comment.results.filter(
+      (item) => item.com_id === commentReply.commentItem.com_id
+    )
+    return (
+      <Popup visible={commentReply.visible} bodyStyle={{ height: '100vh' }}>
+        <Reply
+          onClose={onCloseReplyWithUpdate}
+          commentItem={commentReply.commentItem}
+          articleId={params.artId}
+          onOriginThumbsUp={() =>
+            onThumbsUp(
+              commentReply.commentItem.com_id,
+              currentIsLike[0].is_liking
+            )
+          }
+        />
+      </Popup>
+    )
+  }
+
   const renderArticle = () => {
     // 文章详情
     return (
@@ -166,6 +259,7 @@ const Article = () => {
                 onClick={onFollow}
               >
                 {detail.is_followed ? '已关注' : '关注'}
+                {/* 关注 */}
               </span>
             </div>
           </div>
@@ -187,14 +281,29 @@ const Article = () => {
             <span>20 点赞</span>
           </div>
 
-          <div className="comment-list">
-            <InfiniteScroll hasMore={false} loadMore={loadMoreComments} />
-          </div>
+          {comment.results.length === 0 ? (
+            <NoneComment />
+          ) : (
+            <div className="comment-list">
+              {comment.results.map((item) => (
+                <CommentItem
+                  key={item.com_id}
+                  item={item}
+                  onThumbsUp={() => onThumbsUp(item.com_id, item.is_liking)}
+                  onReply={() => onCommentReplyShow(item)}
+                />
+              ))}
+
+              <InfiniteScroll
+                hasMore={hasMoreComment}
+                loadMore={loadMoreComments}
+              />
+            </div>
+          )}
         </div>
       </div>
     )
   }
-
   return (
     <div className={styles.root}>
       <div className="root-wrapper">
@@ -238,9 +347,14 @@ const Article = () => {
           onCollected={onCollected}
           attitude={detail.attitude}
           onLike={onLike}
+          onOpenReply={() => setCommentVisible(true)}
         />
         {/* <CommentInput /> */}
       </div>
+      {/* article comments pop up layer */}
+      {renderCommentPopup()}
+      {/* comment reply popup layer */}
+      {renderCommentReplyPopup()}
     </div>
   )
 }

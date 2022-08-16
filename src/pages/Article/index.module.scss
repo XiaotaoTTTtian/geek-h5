@@ -176,12 +176,18 @@
       background-color: #fff;
 
       .comment-header {
+        // comment list titles suck top
+        position: -webkit-sticky;
+        position: sticky;
+        top: 0;
+        z-index: 2;
         display: flex;
         justify-content: space-between;
         padding: 16px;
         font-size: 17px;
         font-weight: 500;
         color: #333;
+        background-color: #fff;
 
         span {
           &:last-child {

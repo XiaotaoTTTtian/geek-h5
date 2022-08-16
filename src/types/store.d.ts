@@ -1,3 +1,4 @@
+import { ArtComment } from '@/types/data'
 import { ArticleDetail } from './data.d'
 import { ThunkAction } from 'redux-thunk'
 import store from '@/store'
@@ -71,6 +72,30 @@ export type ArticleAction =
       payload: {
         name: 'is_followed' | 'is_collected' | 'attitude'
         value: boolean | number
+      }
+    }
+  | {
+      type: `article/${'getComment' | 'getCommentMore'}`
+      payload: ArticleComment
+    }
+  | {
+      type: 'article/addComment'
+      payload: ArtComment
+    }
+  | {
+      type: 'comment/updateInfo'
+      payload: {
+        name: string
+        value: boolean
+        target: string
+        like_count: number
+      }
+    }
+  | {
+      type: 'comment/updateCommentCount'
+      payload: {
+        commentId: string
+        total: number
       }
     }
 export type SearchAction =

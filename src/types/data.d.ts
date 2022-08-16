@@ -93,3 +93,48 @@ export type ArticleDetail = {
   read_count: number
 }
 export type ArticleDetailResponse = ApiResponse<ArticleDetail>
+// the type the comment item
+export type ArtComment = {
+  com_id: string
+  aut_id: string
+  aut_name: string
+  aut_photo: string
+  like_count: number
+  reply_count: number
+  pubdate: string
+  content: string
+  is_liking: boolean
+  is_followed: boolean
+}
+// type of article comment
+export type ArticleComment = {
+  total_count: number
+  end_id: string | null
+  last_id: string | null
+  results: ArtComment[]
+}
+export type ArticleCommentResponse = ApiResponse<ArticleComment>
+// the type of comments on an article
+type AddArticleComment = {
+  // id of the new comment
+  com_id: string
+  // who was commented on, and in the case of the article, the id of the article
+  target: string
+  // article id
+  new_obj: ArtComment
+}
+export type AddArticleCommentResponse = ApiResponse<AddArticleComment>
+//the type of comments on an article
+type AddArticleComment = {
+  // id of the new comment
+  com_id: string
+  // who is commenting on, and in the case of anarticle, the id of the article
+  target: string
+  // article id
+  new_obj: ArtComment
+}
+// respond to the comments
+type AddCommentReply = AddArticleComment & {
+  art_id: string
+}
+export type AddCommentReplyResponse = ApiResponse<AddCommentReply>

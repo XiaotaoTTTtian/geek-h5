@@ -9,8 +9,10 @@ type Props = {
   comment?: number
   is_collected?: boolean
   onCollected?: () => void
-  attitude: number
-  onLike: () => void
+  attitude?: number
+  onLike?: () => void
+  onOpenReply: () => void
+  placeholder?: string
 }
 
 const CommentFooter = ({
@@ -21,10 +23,12 @@ const CommentFooter = ({
   onCollected,
   attitude,
   onLike,
+  onOpenReply,
+  placeholder,
 }: Props) => {
   return (
     <div className={styles.root}>
-      <div className="input-btn">
+      <div className="input-btn" onClick={onOpenReply}>
         <Icon type="iconbianji" />
         <span>抢沙发</span>
       </div>
