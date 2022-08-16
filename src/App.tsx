@@ -12,14 +12,18 @@ import ProfileEdit from './pages/Profile/Edit'
 import Search from './pages/Search'
 import SearchResult from './pages/Search/Result'
 import Chat from './pages/Profile/Chat'
+import { KeepAlive } from './components/KeepAlive'
 
 function App() {
   return (
     <Router history={history}>
       <div className="app">
+        <KeepAlive path="/home">
+          <Layout />
+        </KeepAlive>
         <Switch>
           <Route exact path="/" render={() => <Redirect to="/home/index" />} />
-          <Route path="/home" component={Layout} />
+
           <Route path="/login" component={Login} />
           {/* <Route path="/profile/edit" component={ProfileEdit} /> */}
           <AuthRoute path="/profile/edit">
