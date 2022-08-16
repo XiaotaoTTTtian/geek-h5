@@ -11,6 +11,7 @@ import Article from './pages/Article'
 import ProfileEdit from './pages/Profile/Edit'
 import Search from './pages/Search'
 import SearchResult from './pages/Search/Result'
+import Chat from './pages/Profile/Chat'
 
 function App() {
   return (
@@ -33,6 +34,9 @@ function App() {
           <Route path="/search/result">
             <SearchResult />
           </Route>
+          <AuthRoute path="/chat">
+            <Chat />
+          </AuthRoute>
         </Switch>
       </div>
     </Router>
